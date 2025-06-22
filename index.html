@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Licznik kliknięć</title>
+</head>
+<body>
+  <h1>Licznik kliknięć: <span id="counter">0</span></h1>
+  <button onclick="sendClick()">Kliknij mnie!</button>
+
+  <script>
+    const apiBase = 'http://127.0.0.1:8000';
+
+    async function fetchCount() {
+      const res = await fetch(`${apiBase}/count`);
+      const data = await res.json();
+      document.getElementById('counter').innerText = data.count;
+    }
+
+    async function sendClick() {
+      const res = await fetch(`${apiBase}/click`, { method: 'POST' });
+      const data = await res.json();
+      document.getElementById('counter').innerText = data.count;
+    }
+
+    fetchCount();
+  </script>
+</body>
+</html>
