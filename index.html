@@ -47,7 +47,7 @@
     async function fetchCount() {
       const res = await fetch(`${apiBase}/count`);
       const data = await res.json();
-      document.getElementById('counter-value').innerText = data.count;
+      document.getElementById('counter-value').innerText = data.total;
     }
 
     async function sendClick() {
@@ -55,7 +55,7 @@
         method: 'POST'
       });
       const data = await res.json();
-      document.getElementById('counter-value').innerText = data.count;
+      document.getElementById('counter-value').innerText = data.total;
     }
 
     fetchCount();
