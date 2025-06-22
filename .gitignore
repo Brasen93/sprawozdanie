@@ -1,0 +1,38 @@
+# Środowisko wirtualne
+venv/
+
+# Pliki cache Pythona
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# VS Code - ustawienia lokalne
+.vscode/
+
+# Pliki systemowe
+.DS_Store
+Thumbs.db
+
+# Pliki logów i tymczasowe
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Konfiguracje i środowiska
+.env
+*.env
+
+# Metadata pakietów Pythona
+*.egg-info/
+dist/
+build/
+
+# Pokrycie kodu/testy
+htmlcov/
+.coverage
+.cache/
+.tox/
+# Created by venv; see https://docs.python.org/3/library/venv.html
+
