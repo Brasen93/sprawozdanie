@@ -88,6 +88,61 @@ Otwórz plik `index.html` w przeglądarce (dwuklik lub przeciągnięcie do okna 
 
 ---
 
+## Deployment – GitHub Actions + AWS EC2
+
+Aplikacja jest automatycznie wdrażana na instancję EC2 po każdym `push` do gałęzi `main`.
+
+### Wymagania:
+- Konto AWS
+- Utworzona instancja EC2 (Ubuntu)
+- Zainstalowany Docker i Git na EC2
+- Skonfigurowane GitHub Secrets:
+  - `EC2_HOST` – publiczny adres IP EC2
+  - `EC2_USER` – np. `ubuntu`
+  - `EC2_KEY` – zawartość klucza `.pem` (surowy tekst)
+
+### Deployment automatyczny:
+1. Zmiany commitowane i wypchnięte do `main`
+2. GitHub Actions uruchamia workflow `deploy.yml`
+3. Workflow:
+   - Łączy się z EC2 przez SSH
+   - Pobiera/zaktualizuje repozytorium
+   - Buduje obraz Dockera
+   - Uruchamia kontener z aplikacją
+
+Po kilku sekundach aplikacja będzie dostępna na `http://<EC2_IP>`.
+
+## GitHub Actions – Workflow
+
+### Plik: `.github/workflows/deploy.yml`
+
+#### Trigger:
+- Automatyczne uruchomienie przy pushu do `main`
+
+#### Kroki workflowa:
+1. **Checkout repozytorium**
+2. **Zapisanie klucza SSH** (z secretu `EC2_KEY`)
+3. **Połączenie z EC2 przez SSH**
+   - Instalacja Dockera i Gita (jeśli brak)
+   - Klonowanie/pull repozytorium
+   - Budowa obrazu Dockera
+   - Uruchomienie kontenera na porcie 80
+
+#### Przykład:
+```yaml
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      ...
+
+
 ## 🧑‍💻 Autor
 
 Daria Krupińska  
