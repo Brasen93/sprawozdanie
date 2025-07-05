@@ -1,0 +1,32 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Decode and save SSH key
+        run: |
+          echo "${{ secrets.EC2_KEY }}" > key.pem
+          chmod 600 key.pem
+
+      - name: Deploy to EC2 via SSH and Docker
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+            sudo apt update && sudo apt install -y docker.io git
+            sudo systemctl start docker
+            sudo systemctl enable docker
+            sudo docker stop app || true
+            sudo docker rm app || true
+            cd ~/app || (git clone https://github.com/${{ github.repository }} ~/app && cd ~/app)
+            git pull
+            sudo docker build -t myapp .
+            sudo docker run -d --name app -p 80:80 myapp
+          EOF
